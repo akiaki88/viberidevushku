@@ -16,13 +16,19 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install pyinstaller questionary
 
       - name: Build EXE
-        run: pyinstaller --onefile --console --collect-all questionary terminal.py
+        run: |
+          pyinstaller --noconfirm --onedir --windowed --console --onefile --name "terminal" --collect-all questionary terminal.py
+
+      - name: Check output folder
+        run: |
+          dir dist
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
           name: App-Windows
-          path: dist/terminal.exe
+          path: dist/*.exe
