@@ -1,33 +1,30 @@
-import questionary
-from questionary import Choice
-import webbrowser
+name: Build EXE
 
-while True:
-    a=input('введите свое имя: ')
-    print(f'\nпривяу  {a}')
+on:
+  push:
+  workflow_dispatch:
 
-    choice = questionary.select(
-        'выбери девушку для просмотра прайвт контента',
-        choices=[
-            Choice(
-                title='настюха чеченина',
-                value='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            ),
-            Choice(
-                title='сашка мороз',
-                value='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            ),
-            Choice(
-                title='выход',
-                value=None
-            )
-        ]
-    ).ask()
-    if choice:
-        webbrowser.open(choice)
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
 
-        print(f"Ты выбрал: {choice}")
-        break
-    else:
-        print('выход из программы')
-        break
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller questionary
+
+      - name: Build EXE
+        run: |
+          pyinstaller --noconfirm --onefile --console --name "terminal" --collect-all questionary terminal.py
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-Windows
+          path: dist/terminal.exe
