@@ -1,30 +1,66 @@
-name: Build EXE
+import questionary
+from questionary import Choice
+import webbrowser
 
-on:
-  push:
-  workflow_dispatch:
+rickrolls = 0
 
-jobs:
-  build:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+while True:
+    choice = questionary.select(
+        f'выбери девушку для просмотра прайвт контента (рикроллов: {rickrolls})',
+        choices=[
+            Choice(
+                title='мавильская',
+                value='ww'
+            ),
+            Choice(
+                title='щербакова',
+                value='ss'
+            ),
+            Choice(
+                title='выход',
+                value=None
+            ),
+        ]
+    ).ask()
 
-      - name: Install dependencies
-        run: |
-          pip install pyinstaller questionary
+    podmenu = None
 
-      - name: Build EXE
-        run: |
-          pyinstaller --noconfirm --onefile --console --name "terminal" --collect-all questionary terminal.py
+    if choice == 'ww':
+        podmenu = questionary.select(
+            'выбери категорию',
+            choices=[
+                Choice(
+                    title='видосы с хаты + кружочек',
+                    value='https://cutt.ly/myEzEFJw'
+                ),
+                Choice(
+                    title='фотки с моря',
+                    value='https://cutt.ly/myEzEFJw'
+                ),
+            ]
+        ).ask()
 
-      - name: Upload EXE
-        uses: actions/upload-artifact@v4
-        with:
-          name: App-Windows
-          path: dist/terminal.exe
+    elif choice == 'ss':
+        podmenu = questionary.select(
+            'выбери категорию',
+            choices=[
+                Choice(
+                    title='кружочек + 2 видоска с днюшки',
+                    value='https://cutt.ly/myEzEFJw'
+                ),
+                Choice(
+                    title='фотки не знаю откуда))',
+                    value='https://cutt.ly/myEzEFJw'
+                ),
+            ]
+        ).ask()
+
+    else:
+        print('выход из программы')
+        break
+
+    if podmenu:
+        webbrowser.open(podmenu)
+        rickrolls += 1
+        print(f"ты выбрал: rickroll (всего раз: {rickrolls})")
