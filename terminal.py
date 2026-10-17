@@ -1,66 +1,62 @@
-import questionary
-from questionary import Choice
 import webbrowser
+import sys
+import questionary
+from questionary.prompts.common import Choice
 
-rickrolls = 0
-
+nazv=[]
+sites=[]
+def n(user):
+    if user.lower() == 'stop' or user.lower()=='стоп':
+        print('\nостановка программы')
+        sys.exit()
 
 while True:
+    user = input('\nвведите ссылку сайта: ')
+    user2=input('\nвведи название: ')
+    n(user)
+    sites.append(user)
+    nazv.append(user2)
+    break
+while True:
     choice = questionary.select(
-        f'выбери девушку для просмотра прайвт контента (рикроллов: {rickrolls})',
+        'выбери категорию, остановка \'stop\'',
         choices=[
             Choice(
-                title='мавильская',
-                value='ww'
+                title='ваши сохранненые сайты: ',
+                value='sites'
+
             ),
             Choice(
-                title='щербакова',
-                value='ss'
+                title='написать сайт',
+                value='write'
             ),
             Choice(
-                title='выход',
-                value=None
+                title='выход из программы',
+                value='close'
             ),
         ]
+
     ).ask()
 
-    podmenu = None
-
-    if choice == 'ww':
+    if choice == 'sites':
+        knopki=[]
+        for x in range(len(sites)):
+            knopki.append(Choice(title=f'сайт: {nazv[x]} ({sites[x]})', value=sites[x]))
+        knopki.append(Choice(title='вернуться в предыдущую категорию', value='back'))
         podmenu = questionary.select(
-            'выбери категорию',
-            choices=[
-                Choice(
-                    title='видосы с хаты + кружочек',
-                    value='https://cutt.ly/myEzEFJw'
-                ),
-                Choice(
-                    title='фотки с моря',
-                    value='https://cutt.ly/myEzEFJw'
-                ),
-            ]
+            'выберите сайт из сохраненных',
+            choices = knopki
         ).ask()
-
-    elif choice == 'ss':
-        podmenu = questionary.select(
-            'выбери категорию',
-            choices=[
-                Choice(
-                    title='кружочек + 2 видоска с днюшки',
-                    value='https://cutt.ly/myEzEFJw'
-                ),
-                Choice(
-                    title='фотки не знаю откуда))',
-                    value='https://cutt.ly/myEzEFJw'
-                ),
-            ]
-        ).ask()
-
-    else:
-        print('выход из программы')
-        break
-
-    if podmenu:
-        webbrowser.open(podmenu)
-        rickrolls += 1
-        print(f"ты выбрал: rickroll (всего раз: {rickrolls})")
+        if podmenu=='back':
+            continue
+        else:
+            webbrowser.open(podmenu)
+    elif choice== 'close':
+        sys.exit()
+    elif choice=='write':
+        user = input('введите ссылку сайт: ')
+        user2 = input('введи назву: ')
+        n(user)
+        nazv.append(user2)
+        sites.append(user)
+        print('сайт сохранен')
